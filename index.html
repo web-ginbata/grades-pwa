@@ -9,21 +9,9 @@
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
-  <div id="login-section">
-    <h1>Student Grade Viewer</h1>
-    <div id="g_id_onload"
-      data-client_id="YOUR_GOOGLE_CLIENT_ID"
-      data-callback="handleCredentialResponse">
-    </div>
-    <div class="g_id_signin" data-type="standard"></div>
-  </div>
-
-  <div id="dashboard" style="display:none">
-    <h2>Welcome <span id="student-name"></span></h2>
-    <table id="grades-table">
-      <thead><tr><th>Course</th><th>Grade</th><th>Comment</th></tr></thead>
-      <tbody></tbody>
-    </table>
+  <div id="loginDiv"></div>
+  <div id="app" style="display: none;">
+    <!-- Your dashboard UI here -->
   </div>
 
   <script src="app.js"></script>
