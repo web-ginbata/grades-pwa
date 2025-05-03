@@ -41,7 +41,7 @@ function postComment(event) {
   const input = event.target;
   const index = input.dataset.row;
   const comment = input.value;
-  fetch(`https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec`, {
+  fetch(API_URL, {
     method: 'POST',
     body: JSON.stringify({ email: studentEmail, row: index, comment }),
     headers: { 'Content-Type': 'application/json' }
