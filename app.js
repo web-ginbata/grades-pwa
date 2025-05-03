@@ -1,6 +1,6 @@
 let studentEmail = null;
 const API_URL = 'https://script.google.com/macros/s/AKfycbzLs8twfCyO5ADDVK4ucB0pgNZXvGjJwEoPLYFhPkoPJ6I6p7dHkgKn28nnVdTDMQwRCw/exec';
-const CLIENT_ID = '969893536762-79ce27jvrub3at1aano9khctsbv7id8v.apps.googleusercontent.com';
+const CLIENT_ID = '75854195776-6ir2qmqbvlpb4k3rgid269toino26nf4.apps.googleusercontent.com';
 
 let userEmail = '';
 
