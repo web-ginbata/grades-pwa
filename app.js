@@ -7,12 +7,12 @@ let userEmail = '';
 // Initialize Google Identity Services
 
 window.onload = function () {
-  alert("Function google.accounts.id.initialize called");
+  //alert("Function google.accounts.id.initialize called");
   google.accounts.id.initialize({
     client_id: CLIENT_ID,
     callback: handleCredentialResponse
   });
-  alert("After handleCredentialResponse");
+  //alert("After handleCredentialResponse");
 
   google.accounts.id.renderButton(
     document.getElementById('loginDiv'),
@@ -24,7 +24,7 @@ window.onload = function () {
 
 function handleCredentialResponse(response) {
   // Decode the JWT token to extract user info
-  alert("Function handleCredentialResponse called");
+  //alert("Function handleCredentialResponse called");
   const user = parseJwt(response.credential);
   userEmail = user.email;
 
