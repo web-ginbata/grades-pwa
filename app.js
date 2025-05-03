@@ -5,6 +5,7 @@ const CLIENT_ID = '969893536762-79ce27jvrub3at1aano9khctsbv7id8v.apps.googleuser
 let userEmail = '';
 
 // Initialize Google Identity Services
+
 window.onload = function () {
   alert("Function google.accounts.id.initialize called");
   google.accounts.id.initialize({
