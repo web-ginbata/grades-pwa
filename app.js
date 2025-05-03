@@ -1,4 +1,5 @@
 let studentEmail = null;
+const API_URL = 'https://script.google.com/macros/s/AKfycbzLs8twfCyO5ADDVK4ucB0pgNZXvGjJwEoPLYFhPkoPJ6I6p7dHkgKn28nnVdTDMQwRCw/exec';
 
 window.addEventListener('load', () => {
   if ('serviceWorker' in navigator) {
@@ -19,7 +20,7 @@ function handleCredentialResponse(response) {
 }
 
 function fetchGrades() {
-  fetch(`https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec?email=${studentEmail}`)
+  fetch(`${API_URL}?email=${studentEmail}`)
     .then(res => res.json())
     .then(data => {
       const tbody = document.querySelector('#grades-table tbody');
