@@ -6,6 +6,7 @@ let userEmail = '';
 
 // Initialize Google Identity Services
 window.onload = function () {
+  alert("Function google.accounts.id.initialize called");
   google.accounts.id.initialize({
     client_id: CLIENT_ID,
     callback: handleCredentialResponse
