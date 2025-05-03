@@ -1,49 +1,86 @@
 let studentEmail = null;
 const API_URL = 'https://script.google.com/macros/s/AKfycbzLs8twfCyO5ADDVK4ucB0pgNZXvGjJwEoPLYFhPkoPJ6I6p7dHkgKn28nnVdTDMQwRCw/exec';
+const CLIENT_ID = '969893536762-79ce27jvrub3at1aano9khctsbv7id8v.apps.googleusercontent.com';
 
-window.addEventListener('load', () => {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js');
-  }
-});
+let userEmail = '';
+
+// Initialize Google Identity Services
+window.onload = function () {
+  google.accounts.id.initialize({
+    client_id: CLIENT_ID,
+    callback: handleCredentialResponse
+  });
+
+  google.accounts.id.renderButton(
+    document.getElementById('loginDiv'),
+    { theme: 'outline', size: 'large' }
+  );
+
+  google.accounts.id.prompt(); // Auto prompt
+};
 
 function handleCredentialResponse(response) {
-  const token = response.credential;
-  const payload = JSON.parse(atob(token.split('.')[1]));
-  studentEmail = payload.email;
+  // Decode the JWT token to extract user info
+  const user = parseJwt(response.credential);
+  userEmail = user.email;
 
-  document.getElementById("login-section").style.display = "none";
-  document.getElementById("dashboard").style.display = "block";
-  document.getElementById("student-name").textContent = payload.name;
+  // Hide login, show app
+  document.getElementById('loginDiv').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
 
-  fetchGrades();
-}
-
-function fetchGrades() {
-  fetch(`${API_URL}?email=${studentEmail}`)
+  // Fetch grades
+  fetch(`${API_URL}?email=${encodeURIComponent(userEmail)}`)
     .then(res => res.json())
     .then(data => {
-      const tbody = document.querySelector('#grades-table tbody');
-      tbody.innerHTML = '';
-      data.grades.forEach((row, index) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${row.course}</td>
-          <td>${row.grade}</td>
-          <td><input data-row="${index}" value="${row.comment || ''}" onchange="postComment(event)" /></td>
-        `;
-        tbody.appendChild(tr);
-      });
+      renderGrades(data.grades);
+    })
+    .catch(err => {
+      alert('Error fetching grades.');
+      console.error(err);
     });
 }
 
-function postComment(event) {
-  const input = event.target;
-  const index = input.dataset.row;
-  const comment = input.value;
+function renderGrades(grades) {
+  const app = document.getElementById('app');
+  app.innerHTML = '<h2>Your Grades</h2>';
+
+  grades.forEach((item, index) => {
+    const div = document.createElement('div');
+    div.innerHTML = `
+      <strong>${item.course}</strong>: ${item.grade}<br>
+      Comment: <input type="text" id="comment-${index}" value="${item.comment || ''}">
+      <button onclick="submitComment(${index})">Submit</button>
+      <hr>
+    `;
+    app.appendChild(div);
+  });
+}
+
+function submitComment(index) {
+  const commentInput = document.getElementById(`comment-${index}`);
+  const comment = commentInput.value;
+
   fetch(API_URL, {
     method: 'POST',
-    body: JSON.stringify({ email: studentEmail, row: index, comment }),
+    body: JSON.stringify({ email: userEmail, row: index, comment }),
     headers: { 'Content-Type': 'application/json' }
-  });
+  })
+    .then(res => res.text())
+    .then(msg => {
+      alert(msg);
+    })
+    .catch(err => {
+      alert('Error submitting comment.');
+      console.error(err);
+    });
+}
+
+// JWT decoder for email
+function parseJwt(token) {
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const jsonPayload = decodeURIComponent(atob(base64).split('').map(c =>
+    '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
+  );
+  return JSON.parse(jsonPayload);
 }
